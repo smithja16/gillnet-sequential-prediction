@@ -7,6 +7,7 @@
 
 
 library(brms)
+library(bayesplot)
 
 
 ##################
@@ -89,5 +90,58 @@ discards_model <- brm(
     prior(normal(0, 5), class = "Intercept", dpar = "hu") ) )
 
 
+#####################
+##     STEP 2      ##
+## Evaluate Models ##
+#####################
+
+## Basic evaluation
+
+summary(discards_model)
+
+# Chain convergence and diagnostics
+rhat <- brms::rhat(discards_model)
+neff <- neff_ratio(discards_model)
+print(data.frame(
+  Rhat_max = max(rhat),
+  ESS_min = min(neff) ))
+#Rhat should be ~ 1; ESS should be > 0.1
+
+# Trace plots; check mixing and normal estimates
+plot(discards_model, ask=F)
+
+# Posterior predictive checks
+pp_check(discards_model, ndraws = 100)
+pp_check(discards_model, type = "stat", stat = "mean", bins=50)  # Check mean
+pp_check(discards_model, type = "stat", stat = "sd", bins=50)    # Check standard deviation
+
+# Look at conditional effects of predictors
+plot(conditional_effects(discards_model), ask=F)
+
+# For the hurdle part specifically
+plot(conditional_effects(discards_model, dpar = "hu"), ask=F)
+
+# Model performance metrics
+loo_model <- loo(discards_model, moment_match = T)  #takes a minute
+print(loo_model)
+
+# Explore accuracy
+predicted_values <- posterior_predict(discards_model)
+actual <- trip_catch_data$discards
+predicted <- colMeans(predicted_values)
+rmse <- sqrt(mean((actual - predicted)^2))
+mae <- mean(abs(actual - predicted))
+cor_val <- cor(actual, predicted)
+
+## Explore estimates
+
+# Plot coefficient estimates with uncertainty (both hurdle components)
+posterior <- as.matrix(discards_model)
+
+main_pars <- grep("^b_[^h]", colnames(posterior), value = TRUE)
+mcmc_intervals(posterior, pars = main_pars)
+
+hurdle_pars <- grep("^b_hu", colnames(posterior), value = TRUE)
+mcmc_intervals(posterior, pars = hurdle_pars)
 
 
