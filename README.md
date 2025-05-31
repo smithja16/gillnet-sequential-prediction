@@ -2,6 +2,7 @@
 
 This R code demonstrates the model fitting and sequential prediction process used for the NSW Estuary General gillnet fishery.
 It accompanies the paper by Smith, Tyler, and Johnson (in review), NSW DPIRD.
+
 This code cannot be run because the data is confidential. Instead, it is used to show in detail the structure of the analysis.
 This code is also not developed as software that could easily be used with different data, because the code contains things
 like variables names that are specific to our data. However, the general 'Bayesian sequential prediction' approach is generally
