@@ -5,6 +5,8 @@
 ###         J.A.Smith - NSW DPIRD - Jan 2025+               ###
 ###############################################################
 
+## This script fits the Bayesian GLMs
+## In our case, the data for fitting were those from an observer survey
 
 library(brms)
 library(bayesplot)
@@ -52,7 +54,7 @@ mesh_model <- brm(
 
 ## Model 3: net length
 net_model <- brm(
-  bf(Net_length_f ~ EstuaryM + Monthf + Mesh_size_f),
+  bf(Net_length ~ Estuary + Month + Mesh_size),
   family = categorical(link = "logit"),
   data = trip_catch_data,
   prior = c(
@@ -68,10 +70,10 @@ net_model <- brm(
 
 ## Model 4: discards for chosen species; hurdle gamma
 discards_model <- brm(
-  bf(discards ~ Mulloway + Mullet_Sea + Type_of_fishing_method + 
-       Net_length_f + Mesh_size_f + EstuaryM + Monthf,  # positive part
-     hu ~ Mulloway + Mullet_Sea + Type_of_fishing_method + 
-       Net_length_f + Mesh_size_f + EstuaryM + Monthf),  # presence part
+  bf(discards ~ Mulloway + Mullet_Sea + Fishing_method + 
+       Net_length + Mesh_size + Estuary + Month,  # positive part
+     hu ~ Mulloway + Mullet_Sea + Fishing_method + 
+       Net_length + Mesh_size + Estuary + Month),  # presence part
   family = hurdle_gamma(link = "log", link_shape = "log", link_hu = "logit"),
   data = trip_catch_data,
   chains = 4,
