@@ -46,6 +46,7 @@ predictions <- run_parallel_predictions(
   chunk_size = 250,  # rows of new_data per chunk (keep < 500)
   n_cores = 8 )
 t2 <- Sys.time()
+t2 - t1  #time elapsed
 
 
 ##########################

@@ -10,7 +10,9 @@
 
 ## Function to convert predictions to categories
 
-get_categorical_predictions <- function(predictions) {
+get_categorical_predictions <- function(
+    predictions ) {
+  
   # For fishing method (3 categories)
   method_probs <- predictions$intermediate$method
   method_preds <- array(NA, dim = c(dim(method_probs)[1], dim(method_probs)[2]))
@@ -48,7 +50,7 @@ get_categorical_predictions <- function(predictions) {
 
 get_method_probabilities <- function(
     predictions,
-    trip_index) {
+    trip_index ) {
   
   # Get probabilities across all samples for this trip
   method_probs <- predictions$intermediate$method[, trip_index,]
@@ -70,7 +72,7 @@ get_method_totals_by_group <- function(
     predictions,
     new_data,
     group_var,
-    method_levels) {
+    method_levels ) {
   
   # Input validation
   if(!group_var %in% names(new_data)) {
@@ -146,7 +148,7 @@ get_method_totals_by_group <- function(
 
 process_predictions <- function(
     predictions,
-    new_data) {
+    new_data ) {
   
   # Get number of samples and observations
   n_samples <- nrow(predictions$predictions)
@@ -204,7 +206,7 @@ process_predictions <- function(
 
 process_predictions_temporal <- function(
     predictions,
-    new_data) {
+    new_data ) {
   
   # Get dimensions
   n_samples <- nrow(predictions$predictions)
@@ -247,3 +249,4 @@ process_predictions_temporal <- function(
     sample_sums = monthly_yearly_sums  # Keep all posterior samples
   ))
 }
+
